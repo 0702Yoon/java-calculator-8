@@ -38,7 +38,7 @@ public class OperandExtractor {
         int i = 0;
         while (i < line.length()) {
             char c = line.charAt(i);
-            
+
             if (Character.isDigit(c)) {
                 if (!isValidNumber(c)) {
                     throw new IllegalArgumentException(ERROR_NOT_DIGIT);
@@ -56,7 +56,7 @@ public class OperandExtractor {
             delimiterBuilder.append(c);
 
             boolean matched = delimiters.stream()
-                    .anyMatch(d -> d.isEqualTo(delimiterBuilder.toString()));
+                .anyMatch(d -> d.isEqualTo(delimiterBuilder.toString()));
 
             if (matched) {
                 if (numberBuilder.isEmpty()) {
@@ -91,7 +91,7 @@ public class OperandExtractor {
 
     private void validateDelimiter(String delimiterValue, List<Delimiter> delimiters) {
         boolean valid = delimiters.stream()
-                .anyMatch(delimiter -> delimiter.isEqualTo(delimiterValue));
+            .anyMatch(delimiter -> delimiter.isEqualTo(delimiterValue));
         if (!valid) {
             throw new IllegalArgumentException(ERROR_INVALID_DELIMITER);
         }
