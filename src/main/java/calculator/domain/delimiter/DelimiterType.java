@@ -15,7 +15,6 @@ public enum DelimiterType {
     }
 
     public List<Delimiter> getDefaultDelimiters() {
-        // 굳
         return new ArrayList<>(defaultDelimiters);
     }
 
