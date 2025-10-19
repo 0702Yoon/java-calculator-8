@@ -26,4 +26,8 @@ public class Delimiter {
     public int getLength() {
         return delimiter.length();
     }
+
+    public String getValue() {
+        return delimiter;
+    }
 }
