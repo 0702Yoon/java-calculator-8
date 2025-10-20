@@ -76,7 +76,7 @@ public class AddCalculatorTest extends NsTest {
         @DisplayName("기본 구분자가 앞에 들어간 커스텀 구분자로 숫자들의 합을 계산한다.")
         void 기본_구분자가_앞에_있는_커스텀_구분자_테스트() {
             assertSimpleTest(() -> {
-                run("//:#\\n1#:#2:#:3:#:4:#5");
+                run("//:#\\n1:#2:#3:#4:#5");
                 assertThat(output()).contains("결과 : 15");
             });
         }
