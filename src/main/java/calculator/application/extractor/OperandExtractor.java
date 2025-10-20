@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OperandExtractor {
-    private static final int NUMBER_MIN_VALUE_CONDITION = 0;
-    private static final char ASCII_ZERO = '0';
-    private static final String ERROR_NOT_DIGIT = "피연산자는 양수여야 합니다.";
     private static final String ERROR_INVALID_DELIMITER = "없는 구분자입니다.";
     private static final String ERROR_MISPLACED_DELIMITER = "구분자 이전에 숫자가 있어야 합니다.";
     private static final String ERROR_LINE_END_DELIMITER = "잘못된 구분자 입력으로 끝났습니다.";
@@ -40,53 +37,49 @@ public class OperandExtractor {
             char c = line.charAt(i);
 
             if (Character.isDigit(c)) {
-                if (!isValidNumber(c)) {
-                    throw new IllegalArgumentException(ERROR_NOT_DIGIT);
-                }
 
-                if (!delimiterBuilder.isEmpty()) {
-                    validateDelimiter(delimiterBuilder.toString(), delimiters);
-                    delimiterBuilder.setLength(0);
+                if (isDelimiterPresent(delimiterBuilder)) {
+                    handleDelimiterSegment(delimiterBuilder, numberBuilder, operands, delimiters);
                 }
                 numberBuilder.append(c);
                 i++;
                 continue;
             }
-
             delimiterBuilder.append(c);
-
-            boolean matched = delimiters.stream()
-                .anyMatch(d -> d.isEqualTo(delimiterBuilder.toString()));
-
-            if (matched) {
-                if (numberBuilder.isEmpty()) {
-                    throw new IllegalArgumentException(ERROR_MISPLACED_DELIMITER);
-                }
-                flushOperand(numberBuilder, operands);
-                delimiterBuilder.setLength(0);
-            }
             i++;
         }
 
         if (!numberBuilder.isEmpty()) {
-            flushOperand(numberBuilder, operands);
+            saveOperand(numberBuilder, operands);
         }
 
-        if (!delimiterBuilder.isEmpty()) {
+        if (isDelimiterPresent(delimiterBuilder)) {
             throw new IllegalArgumentException(ERROR_LINE_END_DELIMITER);
         }
 
         return operands.stream().mapToLong(Long::longValue).toArray();
     }
 
-    private void flushOperand(StringBuilder sb, List<Long> operands) {
+    private void handleDelimiterSegment(
+        StringBuilder delimiterBuilder, StringBuilder numberBuilder,
+        List<Long> operands, List<Delimiter> delimiters
+    ) {
+        validateDelimiter(delimiterBuilder.toString(), delimiters);
+        if (numberBuilder.isEmpty()) {
+            throw new IllegalArgumentException(ERROR_MISPLACED_DELIMITER);
+        }
+        saveOperand(numberBuilder, operands);
+        delimiterBuilder.setLength(0);
+    }
+
+    private boolean isDelimiterPresent(StringBuilder delimiterBuilder) {
+        return !delimiterBuilder.isEmpty();
+    }
+
+    private void saveOperand(StringBuilder sb, List<Long> operands) {
         long value = Long.parseLong(sb.toString());
         operands.add(value);
         sb.setLength(0);
-    }
-
-    private boolean isValidNumber(char oneChar) {
-        return (oneChar - ASCII_ZERO) >= NUMBER_MIN_VALUE_CONDITION;
     }
 
     private void validateDelimiter(String delimiterValue, List<Delimiter> delimiters) {
